@@ -105,7 +105,7 @@ En el panel de Chat de GitHub Copilot, abrí el ícono de herramientas y elegí 
 Usá una consulta como esta para probar el servidor de gastos MCP:
 
 ```
-Log expense for 50 bucks of pizza on my amex today
+Registrá un gasto de 50 dólares de pizza en mi Amex hoy
 ```
 
 ![Ejemplo de entrada en GitHub Copilot Chat](../readme_samplequery.png)
