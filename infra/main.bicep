@@ -23,14 +23,14 @@ param acaExists bool = false
 })
 param openAiResourceLocation string
 
-@description('Flag to enable or disable the virtual network feature')
-param useVnet bool = true
-
 @description('Flag to enable or disable monitoring resources')
 param useMonitoring bool = true
- 
+
+@description('Flag to enable or disable the virtual network feature')
+param useVnet bool = false
+
 @description('Flag to enable or disable public ingress')
-param usePrivateIngress bool = true
+param usePrivateIngress bool = false
 
 var resourceToken = toLower(uniqueString(subscription().id, name, location))
 var tags = { 'azd-env-name': name }
@@ -55,7 +55,7 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.7.2' = {
   scope: resourceGroup
   params: {
     name: '${resourceToken}-cog'
-    location: !empty(openAiResourceLocation) ? openAiResourceLocation : location
+    location: openAiResourceLocation
     tags: tags
     kind: 'OpenAI'
     customSubDomainName: '${resourceToken}-cog'
@@ -68,7 +68,7 @@ module openAi 'br/public:avm/res/cognitive-services/account:0.7.2' = {
     diagnosticSettings: useMonitoring ? [
       {
         name: 'customSetting'
-        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        workspaceResourceId: logAnalyticsWorkspace.?outputs.resourceId
       }
     ] : []
     deployments: [
@@ -104,7 +104,6 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.6.1' = {
         isZoneRedundant: false
       }
     ]
-    enableFreeTier: true
     networkRestrictions: {
       ipRules: []
       publicNetworkAccess: useVnet ? 'Disabled' : 'Enabled'
@@ -118,7 +117,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.6.1' = {
             name: cosmosDbContainerName
             kind: 'Hash'
             paths: [
-              '/id'
+              '/category'
             ]
           }
         ]
@@ -151,8 +150,7 @@ module containerAppsNSG 'br/public:avm/res/network/network-security-group:0.5.1'
     name: '${prefix}-container-apps-nsg'
     location: location
     tags: tags
-    securityRules: concat(
-      usePrivateIngress ? [
+    securityRules: usePrivateIngress ? [
         {
           name: 'AllowHttpsInbound'
           properties: {
@@ -167,7 +165,6 @@ module containerAppsNSG 'br/public:avm/res/network/network-security-group:0.5.1'
           }
         }
       ] : []
-    )
   }
 }
 
@@ -289,7 +286,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (us
       {
         name: 'container-apps-subnet'
         addressPrefix: '10.0.0.0/21'
-        networkSecurityGroupResourceId: containerAppsNSG.outputs.resourceId
+        networkSecurityGroupResourceId: containerAppsNSG!.outputs.resourceId
         delegation: 'Microsoft.App/environments'
       }
       {
@@ -297,7 +294,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (us
         addressPrefix: '10.0.8.0/24'
         privateEndpointNetworkPolicies: 'Enabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
-        networkSecurityGroupResourceId: privateEndpointsNSG.outputs.resourceId
+        networkSecurityGroupResourceId: privateEndpointsNSG!.outputs.resourceId
       }
       {
         name: 'GatewaySubnet' // Required name for Gateway subnet
@@ -322,7 +319,7 @@ module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -338,7 +335,7 @@ module logAnalyticsPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -354,7 +351,7 @@ module logAnalyticsQueryPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -370,7 +367,7 @@ module logAnalyticsAgentPrivateDnsZone 'br/public:avm/res/network/private-dns-zo
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -386,7 +383,7 @@ module monitorPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' 
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -402,7 +399,7 @@ module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = i
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -418,7 +415,7 @@ module acrPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -434,7 +431,23 @@ module containerAppsPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0
     virtualNetworkLinks: [
       {
         registrationEnabled: false
-        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
+      }
+    ]
+  }
+}
+
+// CosmosDB Private DNS Zone
+module cosmosDbPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (useVnet) {
+  name: 'cosmosdb-dns-zone'
+  scope: resourceGroup
+  params: {
+    name: 'privatelink.documents.azure.com'
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: virtualNetwork!.outputs.resourceId
       }
     ]
   }
@@ -449,11 +462,11 @@ module containerAppsEnvironmentPrivateEndpoint 'br/public:avm/res/network/privat
     name: '${prefix}-containerappsenv-pe'
     location: location
     tags: tags
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[1]
     privateDnsZoneGroup: {
       privateDnsZoneGroupConfigs: [
         {
-          privateDnsZoneResourceId: containerAppsPrivateDnsZone.outputs.resourceId
+          privateDnsZoneResourceId: containerAppsPrivateDnsZone!.outputs.resourceId
         }
       ]
     }
@@ -478,11 +491,11 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = if 
     name: '${prefix}-openai-pe'
     location: location
     tags: tags
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[1]
     privateDnsZoneGroup: {
       privateDnsZoneGroupConfigs: [
         {
-          privateDnsZoneResourceId: openAiPrivateDnsZone.outputs.resourceId
+          privateDnsZoneResourceId: openAiPrivateDnsZone!.outputs.resourceId
         }
       ]
     }
@@ -515,29 +528,29 @@ module monitorPrivateLinkScope 'br/public:avm/res/insights/private-link-scope:0.
     scopedResources: [
       {
         name: 'loganalytics-scoped-resource'
-        linkedResourceId: logAnalyticsWorkspace.outputs.resourceId
+        linkedResourceId: logAnalyticsWorkspace!.outputs.resourceId
       }
     ]
     privateEndpoints: [
       {
         name: 'loganalytics-private-endpoint'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+        subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[1]
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
-              privateDnsZoneResourceId: monitorPrivateDnsZone.outputs.resourceId
+              privateDnsZoneResourceId: monitorPrivateDnsZone!.outputs.resourceId
             }
             {
-              privateDnsZoneResourceId: logAnalyticsPrivateDnsZone.outputs.resourceId
+              privateDnsZoneResourceId: logAnalyticsPrivateDnsZone!.outputs.resourceId
             }
             {
-              privateDnsZoneResourceId: logAnalyticsQueryPrivateDnsZone.outputs.resourceId
+              privateDnsZoneResourceId: logAnalyticsQueryPrivateDnsZone!.outputs.resourceId
             }
             {
-              privateDnsZoneResourceId: logAnalyticsAgentPrivateDnsZone.outputs.resourceId
+              privateDnsZoneResourceId: logAnalyticsAgentPrivateDnsZone!.outputs.resourceId
             }
             {
-              privateDnsZoneResourceId: blobPrivateDnsZone.outputs.resourceId
+              privateDnsZoneResourceId: blobPrivateDnsZone!.outputs.resourceId
             }
           ]
         }
@@ -555,12 +568,12 @@ module containerApps 'core/host/container-apps.bicep' = {
     location: location
     tags: tags
     containerAppsEnvironmentName: '${prefix}-containerapps-env'
-    containerRegistryName: '${replace(prefix, '-', '')}registry'
-    logAnalyticsWorkspaceName: useMonitoring ? logAnalyticsWorkspace.outputs.name : ''
+    containerRegistryName: '${take(replace(prefix, '-', ''), 42)}registry'
+    logAnalyticsWorkspaceName: useMonitoring ? logAnalyticsWorkspace!.outputs.name : ''
     // Reference the virtual network only if useVnet is true
-    subnetResourceId: useVnet ? virtualNetwork.outputs.subnetResourceIds[0] : ''
-    vnetName: useVnet ? virtualNetwork.outputs.name : ''
-    subnetName: useVnet ? virtualNetwork.outputs.subnetNames[0] : ''
+    subnetResourceId: useVnet ? virtualNetwork!.outputs.subnetResourceIds[0] : ''
+    vnetName: useVnet ? virtualNetwork!.outputs.name : ''
+    subnetName: useVnet ? virtualNetwork!.outputs.subnetNames[0] : ''
     usePrivateIngress: usePrivateIngress
   }
 }
@@ -573,11 +586,11 @@ module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = 
     name: '${prefix}-acr-pe'
     location: location
     tags: tags
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[1]
     privateDnsZoneGroup: {
       privateDnsZoneGroupConfigs: [
         {
-          privateDnsZoneResourceId: acrPrivateDnsZone.outputs.resourceId
+          privateDnsZoneResourceId: acrPrivateDnsZone!.outputs.resourceId
         }
       ]
     }
@@ -589,6 +602,36 @@ module acrPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = 
             'registry'
           ]
           privateLinkServiceId: containerApps.outputs.registryId
+        }
+      }
+    ]
+  }
+}
+
+// CosmosDB Private Endpoint
+module cosmosDbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = if (useVnet) {
+  name: 'cosmosDbPrivateEndpointDeployment'
+  scope: resourceGroup
+  params: {
+    name: '${prefix}-cosmosdb-pe'
+    location: location
+    tags: tags
+    subnetResourceId: virtualNetwork!.outputs.subnetResourceIds[1]
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: cosmosDbPrivateDnsZone!.outputs.resourceId
+        }
+      ]
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${prefix}-cosmosdb-pe'
+        properties: {
+          groupIds: [
+            'Sql'
+          ]
+          privateLinkServiceId: cosmosDb.outputs.resourceId
         }
       }
     ]

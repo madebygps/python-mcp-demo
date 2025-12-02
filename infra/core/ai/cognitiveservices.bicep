@@ -41,4 +41,3 @@ output id string = account.id
 output name string = account.name
 output location string = account.location
 output skuName string = account.sku.name
-output key string = account.listKeys().key1

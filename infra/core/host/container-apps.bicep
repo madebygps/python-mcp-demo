@@ -5,7 +5,6 @@ param tags object = {}
 param containerAppsEnvironmentName string
 param containerRegistryName string
 param logAnalyticsWorkspaceName string = ''
-param applicationInsightsName string = ''
 
 @description('Virtual network name for container apps environment.')
 param vnetName string = ''
@@ -23,7 +22,6 @@ module containerAppsEnvironment 'container-apps-environment.bicep' = {
     location: location
     tags: tags
     logAnalyticsWorkspaceName: logAnalyticsWorkspaceName
-    applicationInsightsName: applicationInsightsName
     vnetName: vnetName
     subnetName: subnetName
     usePrivateIngress: usePrivateIngress

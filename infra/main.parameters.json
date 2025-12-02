@@ -11,14 +11,14 @@
       "principalId": {
         "value": "${AZURE_PRINCIPAL_ID}"
       },
+      "useMonitoring": {
+        "value": "${USE_MONITORING=true}"
+      },
       "useVnet": {
         "value": "${USE_VNET=false}"
       },
       "usePrivateIngress": {
         "value": "${USE_PRIVATE_INGRESS=false}"
-      },
-      "useMonitoring": {
-        "value": "${USE_MONITORING=false}"
       },
       "acaExists": {
         "value": "${SERVICE_ACA_RESOURCE_EXISTS=false}"

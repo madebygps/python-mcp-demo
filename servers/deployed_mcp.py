@@ -23,8 +23,6 @@ RUNNING_IN_PRODUCTION = os.getenv("RUNNING_IN_PRODUCTION", "false").lower() == "
 AZURE_CLIENT_ID = os.getenv("AZURE_CLIENT_ID", "")
 
 # Configure Cosmos DB client and container
-if not AZURE_COSMOSDB_ACCOUNT:
-  exit("AZURE_COSMOSDB_ACCOUNT environment variable is not set.")
 if RUNNING_IN_PRODUCTION and AZURE_CLIENT_ID:
     credential = ManagedIdentityCredential(client_id=AZURE_CLIENT_ID)
 else:
@@ -80,7 +78,7 @@ async def add_expense(
       "amount": amount,
       "category": category.value,
       "description": description,
-      "payment_method": payment_method.name,
+      "payment_method": payment_method.value,
     }
 
     await cosmos_container.create_item(body=expense_item)
@@ -100,9 +98,8 @@ async def get_expenses_data():
     query = "SELECT * FROM c ORDER BY c.date DESC"
     expenses_data = []
 
-    async for page in cosmos_container.query_items(query=query).by_page():
-      async for item in page:
-        expenses_data.append(item)
+    async for item in cosmos_container.query_items(query=query, enable_cross_partition_query=True):
+      expenses_data.append(item)
 
     if not expenses_data:
       return "No expenses found."

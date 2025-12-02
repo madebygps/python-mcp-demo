@@ -60,7 +60,7 @@ async def add_expense(
         )
 
       writer.writerow(
-        [date_iso, amount, category.value, description, payment_method.name]
+        [date_iso, amount, category.value, description, payment_method.value]
       )
 
     return f"Successfully added expense: ${amount} for {description} on {date_iso}"

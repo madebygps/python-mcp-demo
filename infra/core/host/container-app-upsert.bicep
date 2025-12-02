@@ -40,10 +40,7 @@ param containerCpuCoreCount string = '0.5'
 @description('Memory allocated to a single container instance, e.g. 1Gi')
 param containerMemory string = '1.0Gi'
 
-@description('Workload profile name to use for the container app when using private ingress')
-param workloadProfileName string = 'Warm'
-
-resource existingApp 'Microsoft.App/containerApps@2022-03-01' existing = if (exists) {
+resource existingApp 'Microsoft.App/containerApps@2025-01-01' existing = if (exists) {
   name: name
 }
 
@@ -70,8 +67,6 @@ module app 'container-app.bicep' = {
     env: env
     imageName: exists ? existingApp.properties.template.containers[0].image : ''
     targetPort: targetPort
-    // Pass workload profile name parameter
-    workloadProfileName: workloadProfileName
   }
 }
 
