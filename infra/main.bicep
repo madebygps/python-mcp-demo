@@ -32,6 +32,7 @@ param acaExists bool = false
     type: 'location'
   }
 })
+// This does not need a default value, as azd will prompt the user to select a location
 param openAiResourceLocation string
 
 @description('Flag to enable or disable monitoring resources')
