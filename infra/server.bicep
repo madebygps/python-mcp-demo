@@ -5,7 +5,7 @@ param tags object = {}
 param identityName string
 param containerAppsEnvironmentName string
 param containerRegistryName string
-param serviceName string = 'aca'
+param serviceName string = 'server'
 param exists bool
 param openAiDeploymentName string
 param openAiEndpoint string
@@ -13,7 +13,7 @@ param cosmosDbAccount string
 param cosmosDbDatabase string
 param cosmosDbContainer string
 
-resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource serverIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: identityName
   location: location
 }
@@ -24,7 +24,7 @@ module app 'core/host/container-app-upsert.bicep' = {
     name: name
     location: location
     tags: union(tags, { 'azd-service-name': serviceName })
-    identityName: acaIdentity.name
+    identityName: serverIdentity.name
     exists: exists
     containerAppsEnvironmentName: containerAppsEnvironmentName
     containerRegistryName: containerRegistryName
@@ -44,7 +44,7 @@ module app 'core/host/container-app-upsert.bicep' = {
       }
       {
         name: 'AZURE_CLIENT_ID'
-        value: acaIdentity.properties.clientId
+        value: serverIdentity.properties.clientId
       }
       {
         name: 'AZURE_COSMOSDB_ACCOUNT'
@@ -63,7 +63,7 @@ module app 'core/host/container-app-upsert.bicep' = {
   }
 }
 
-output identityPrincipalId string = acaIdentity.properties.principalId
+output identityPrincipalId string = serverIdentity.properties.principalId
 output name string = app.outputs.name
 output hostName string = app.outputs.hostName
 output uri string = app.outputs.uri

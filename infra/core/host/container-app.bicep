@@ -124,5 +124,5 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2022-02-01-pr
 output defaultDomain string = containerAppsEnvironment.properties.defaultDomain
 output imageName string = imageName
 output name string = app.name
-output hostName string = app.properties.configuration.ingress.fqdn
+output hostName string = ingressEnabled ? app.properties.configuration.ingress.fqdn : ''
 output uri string = ingressEnabled ? 'https://${app.properties.configuration.ingress.fqdn}' : ''

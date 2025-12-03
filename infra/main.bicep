@@ -12,7 +12,9 @@ param location string
 @description('Id of the user or app to assign application roles')
 param principalId string = ''
 
-param acaExists bool = false
+param serverExists bool = false
+
+param agentExists bool = false
 
 @description('Location for the OpenAI resource group')
 @allowed([
@@ -653,15 +655,15 @@ module cosmosDbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.
   }
 }
 
-// Container app frontend
-module aca 'aca.bicep' = {
-  name: 'aca'
+// Container app for MCP server
+module server 'server.bicep' = {
+  name: 'server'
   scope: resourceGroup
   params: {
-    name: replace('${take(prefix,19)}-ca', '--', '-')
+    name: replace('${take(prefix,15)}-server', '--', '-')
     location: location
     tags: tags
-    identityName: '${prefix}-id-aca'
+    identityName: '${prefix}-id-server'
     containerAppsEnvironmentName: containerApps.outputs.environmentName
     containerRegistryName: containerApps.outputs.registryName
     openAiDeploymentName: openAiDeploymentName
@@ -669,7 +671,25 @@ module aca 'aca.bicep' = {
     cosmosDbAccount: cosmosDb.outputs.name
     cosmosDbDatabase: cosmosDbDatabaseName
     cosmosDbContainer: cosmosDbContainerName
-    exists: acaExists
+    exists: serverExists
+  }
+}
+
+// Container app for agent
+module agent 'agent.bicep' = {
+  name: 'agent'
+  scope: resourceGroup
+  params: {
+    name: replace('${take(prefix,15)}-agent', '--', '-')
+    location: location
+    tags: tags
+    identityName: '${prefix}-id-agent'
+    containerAppsEnvironmentName: containerApps.outputs.environmentName
+    containerRegistryName: containerApps.outputs.registryName
+    openAiDeploymentName: openAiDeploymentName
+    openAiEndpoint: openAi.outputs.endpoint
+    mcpServerUrl: '${server.outputs.uri}/mcp/'
+    exists: agentExists
   }
 }
 
@@ -683,11 +703,21 @@ module openAiRoleUser 'core/security/role.bicep' = {
   }
 }
 
-module openAiRoleBackend 'core/security/role.bicep' = {
+module openAiRoleServer 'core/security/role.bicep' = {
   scope: resourceGroup
-  name: 'openai-role-backend'
+  name: 'openai-role-server'
   params: {
-    principalId: aca.outputs.identityPrincipalId
+    principalId: server.outputs.identityPrincipalId
+    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
+    principalType: 'ServicePrincipal'
+  }
+}
+
+module openAiRoleAgent 'core/security/role.bicep' = {
+  scope: resourceGroup
+  name: 'openai-role-agent'
+  params: {
+    principalId: agent.outputs.identityPrincipalId
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' // Cognitive Services OpenAI User
     principalType: 'ServicePrincipal'
   }
@@ -704,13 +734,13 @@ module cosmosDbRoleUser 'core/security/documentdb-sql-role.bicep' = {
   }
 }
 
-// Cosmos DB Data Contributor role for backend
-module cosmosDbRoleBackend 'core/security/documentdb-sql-role.bicep' = {
+// Cosmos DB Data Contributor role for server
+module cosmosDbRoleServer 'core/security/documentdb-sql-role.bicep' = {
   scope: resourceGroup
-  name: 'cosmosdb-role-backend'
+  name: 'cosmosdb-role-server'
   params: {
     databaseAccountName: cosmosDb.outputs.name
-    principalId: aca.outputs.identityPrincipalId
+    principalId: server.outputs.identityPrincipalId
     roleDefinitionId: '/${subscription().id}/resourceGroups/${resourceGroup.name}/providers/Microsoft.DocumentDB/databaseAccounts/${cosmosDb.outputs.name}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002'
   }
 }
@@ -725,10 +755,15 @@ output AZURE_OPENAI_ENDPOINT string = openAi.outputs.endpoint
 output AZURE_OPENAI_RESOURCE string = openAi.outputs.name
 output AZURE_OPENAI_RESOURCE_LOCATION string = openAi.outputs.location
 
-output SERVICE_ACA_IDENTITY_PRINCIPAL_ID string = aca.outputs.identityPrincipalId
-output SERVICE_ACA_NAME string = aca.outputs.name
-output SERVICE_ACA_URI string = aca.outputs.uri
-output SERVICE_ACA_IMAGE_NAME string = aca.outputs.imageName
+output SERVICE_SERVER_IDENTITY_PRINCIPAL_ID string = server.outputs.identityPrincipalId
+output SERVICE_SERVER_NAME string = server.outputs.name
+output SERVICE_SERVER_URI string = server.outputs.uri
+output SERVICE_SERVER_IMAGE_NAME string = server.outputs.imageName
+
+output SERVICE_AGENT_IDENTITY_PRINCIPAL_ID string = agent.outputs.identityPrincipalId
+output SERVICE_AGENT_NAME string = agent.outputs.name
+output SERVICE_AGENT_URI string = agent.outputs.uri
+output SERVICE_AGENT_IMAGE_NAME string = agent.outputs.imageName
 
 output AZURE_CONTAINER_ENVIRONMENT_NAME string = containerApps.outputs.environmentName
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerApps.outputs.registryLoginServer
