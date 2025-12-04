@@ -191,15 +191,19 @@ http_app = mcp.http_app()
 # Wrapper ASGI app to add health endpoint for Container Apps probes
 async def app(scope, receive, send):
     if scope["type"] == "http" and scope["path"] == "/health":
-        await send({
-            "type": "http.response.start",
-            "status": 200,
-            "headers": [[b"content-type", b"application/json"]],
-        })
-        await send({
-            "type": "http.response.body",
-            "body": b'{"status": "healthy"}',
-        })
+        await send(
+            {
+                "type": "http.response.start",
+                "status": 200,
+                "headers": [[b"content-type", b"application/json"]],
+            }
+        )
+        await send(
+            {
+                "type": "http.response.body",
+                "body": b'{"status": "healthy"}',
+            }
+        )
         return
     await http_app(scope, receive, send)
 
