@@ -18,12 +18,14 @@ load_dotenv(override=True)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger("ExpensesMCP")
 
+
 def require_env_var(name: str) -> str:
     value = os.getenv(name)
     if value is None or value.strip() == "":
         logger.error(f"Missing required environment variable: {name}")
         exit(1)
     return value
+
 
 # Cosmos DB configuration from environment variables
 AZURE_COSMOSDB_ACCOUNT = require_env_var("AZURE_COSMOSDB_ACCOUNT")
@@ -33,7 +35,9 @@ RUNNING_IN_PRODUCTION = os.getenv("RUNNING_IN_PRODUCTION", "false").lower() == "
 AZURE_CLIENT_ID = os.getenv("AZURE_CLIENT_ID", "")
 
 # Keycloak authentication configuration
-KEYCLOAK_REALM_URL = require_env_var("KEYCLOAK_REALM_URL")  # e.g., https://routeconfig.<env>.azurecontainerapps.io/auth/realms/mcp
+KEYCLOAK_REALM_URL = require_env_var(
+    "KEYCLOAK_REALM_URL"
+)  # e.g., https://routeconfig.<env>.azurecontainerapps.io/auth/realms/mcp
 MCP_SERVER_BASE_URL = require_env_var("MCP_SERVER_BASE_URL")  # e.g., https://routeconfig.<env>.azurecontainerapps.io
 MCP_SERVER_AUDIENCE = os.getenv("MCP_SERVER_AUDIENCE", "mcp-server")
 

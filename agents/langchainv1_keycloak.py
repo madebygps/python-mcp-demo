@@ -50,7 +50,7 @@ if API_HOST == "azure":
         azure.identity.DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"
     )
     base_model = ChatOpenAI(
-        model=os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT"),
+        model=os.environ.get("AZURE_OPENAI_CHAT_DEPLOYMENT", "gpt-4o"),
         base_url=os.environ["AZURE_OPENAI_ENDPOINT"] + "/openai/v1/",
         api_key=token_provider,
     )
@@ -88,7 +88,12 @@ async def register_client_via_dcr() -> tuple[str, str]:
         )
 
         if response.status_code not in (200, 201):
-            raise Exception(f"DCR failed: {response.status_code} - {response.text}")
+            raise Exception(
+                f"DCR registration failed at {dcr_url}: "
+                f"status={response.status_code}, "
+                f"response={response.text}, "
+                f"headers={dict(response.headers)}"
+            )
 
         data = response.json()
         client_id = data["client_id"]
@@ -116,7 +121,12 @@ async def get_keycloak_token(client_id: str, client_secret: str) -> str:
         )
 
         if response.status_code != 200:
-            raise Exception(f"Failed to get token: {response.status_code} - {response.text}")
+            raise Exception(
+                f"Token request failed at {token_url}: "
+                f"status={response.status_code}, "
+                f"response={response.text}, "
+                f"headers={dict(response.headers)}"
+            )
 
         token_data = response.json()
         access_token = token_data["access_token"]
@@ -137,7 +147,7 @@ async def run_agent() -> None:
     logger.info(f"📡 Connecting to MCP server: {MCP_SERVER_URL}")
 
     # Initialize MCP client with Bearer token auth
-    client = MultiServerMCPClient(
+    client = MultiServerMCPClient(  # type: ignore[arg-type]
         {
             "expenses": {
                 "url": MCP_SERVER_URL,
