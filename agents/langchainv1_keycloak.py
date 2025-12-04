@@ -34,13 +34,14 @@ logger = logging.getLogger("langchain_keycloak")
 load_dotenv(override=True)
 
 # MCP Server and Keycloak configuration
-MCP_SERVER_URL = os.getenv(
-    "MCP_SERVER_URL", "https://mcp-gps-key-n7pc5ej-ca.ashymeadow-ae27942e.eastus2.azurecontainerapps.io/mcp"
-)
-KEYCLOAK_REALM_URL = os.getenv(
-    "KEYCLOAK_REALM_URL", "https://mcp-gps-key-n7pc5ej-kc.ashymeadow-ae27942e.eastus2.azurecontainerapps.io/realms/mcp"
-)
-
+MCP_SERVER_URL = os.getenv("MCP_SERVER_URL")
+if not MCP_SERVER_URL:
+    logger.error("Environment variable MCP_SERVER_URL is not set. Please set it to the MCP server URL.")
+    raise RuntimeError("Missing required environment variable: MCP_SERVER_URL")
+KEYCLOAK_REALM_URL = os.getenv("KEYCLOAK_REALM_URL")
+if not KEYCLOAK_REALM_URL:
+    logger.error("Environment variable KEYCLOAK_REALM_URL is not set. Please set it to the Keycloak realm URL.")
+    raise RuntimeError("Missing required environment variable: KEYCLOAK_REALM_URL")
 # Configure language model based on API_HOST
 API_HOST = os.getenv("API_HOST", "github")
 
