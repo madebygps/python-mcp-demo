@@ -1,6 +1,13 @@
+@description('Name of the Container Apps environment')
 param containerAppsEnvironmentName string
+
+@description('Name of the MCP server container app')
 param mcpServerAppName string
+
+@description('Name of the Keycloak container app')
 param keycloakAppName string
+
+@description('Name for the HTTP route configuration')
 param routeConfigName string = 'mcproutes'
 
 resource containerEnv 'Microsoft.App/managedEnvironments@2024-10-02-preview' existing = {
@@ -63,10 +70,7 @@ resource httpRouteConfig 'Microsoft.App/managedEnvironments/httpRouteConfigs@202
       }
     ]
   }
-  dependsOn: [
-    mcpServerApp
-    keycloakApp
-  ]
+  // Note: dependsOn not needed - 'existing' resources create implicit dependencies
 }
 
 output fqdn string = httpRouteConfig.properties.fqdn

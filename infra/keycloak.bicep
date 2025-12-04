@@ -1,13 +1,29 @@
+@description('Name of the Keycloak container app')
 param name string
+
+@description('Azure region for deployment')
 param location string = resourceGroup().location
+
+@description('Tags to apply to all resources')
 param tags object = {}
 
+@description('Name of the Container Apps environment')
 param containerAppsEnvironmentName string
+
+@description('Name of the Azure Container Registry')
 param containerRegistryName string
+
+@description('Service name for azd tagging')
 param serviceName string = 'keycloak'
+
+@description('Keycloak admin username')
 param keycloakAdminUser string = 'admin'
+
 @secure()
+@description('Keycloak admin password')
 param keycloakAdminPassword string
+
+@description('Whether the container app already exists (for updates)')
 param exists bool
 
 @description('User assigned identity name for ACR pull')

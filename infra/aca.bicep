@@ -1,21 +1,49 @@
+@description('Name of the MCP server container app')
 param name string
+
+@description('Azure region for deployment')
 param location string = resourceGroup().location
+
+@description('Tags to apply to all resources')
 param tags object = {}
 
+@description('User assigned identity name for ACR pull and Azure service access')
 param identityName string
+
+@description('Name of the Container Apps environment')
 param containerAppsEnvironmentName string
+
+@description('Name of the Azure Container Registry')
 param containerRegistryName string
+
+@description('Service name for azd tagging')
 param serviceName string = 'aca'
+
+@description('Whether the container app already exists (for updates)')
 param exists bool
+
+@description('Azure OpenAI deployment name')
 param openAiDeploymentName string
+
+@description('Azure OpenAI endpoint URL')
 param openAiEndpoint string
+
+@description('Cosmos DB account name')
 param cosmosDbAccount string
+
+@description('Cosmos DB database name')
 param cosmosDbDatabase string
+
+@description('Cosmos DB container name')
 param cosmosDbContainer string
 
-// Keycloak authentication parameters
+@description('Keycloak realm URL for token validation')
 param keycloakRealmUrl string
+
+@description('Base URL of the MCP server (for OAuth metadata)')
 param mcpServerBaseUrl string
+
+@description('Expected audience claim in JWT tokens')
 param mcpServerAudience string = 'mcp-server'
 
 resource acaIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
