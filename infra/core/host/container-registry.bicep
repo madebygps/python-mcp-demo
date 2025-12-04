@@ -10,7 +10,7 @@ param encryption object = {
   status: 'disabled'
 }
 param networkRuleBypassOptions string = 'AzureServices'
-param publicNetworkAccess string = useVnet ? 'Disabled' : 'Enabled' // Public network access is disabled if VNet integration is enabled
+param publicNetworkAccess string = 'Enabled' // Keep public access enabled for pushing images from local machine
 param useVnet bool = false // Determines if VNet integration is enabled
 param sku object = {
   name: useVnet ? 'Premium' : 'Standard' // Use Premium if VNet is required, otherwise Standard

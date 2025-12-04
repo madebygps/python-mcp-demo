@@ -152,7 +152,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     skuName: 'PerGB2018'
     dataRetention: 30
     publicNetworkAccessForIngestion: useVnet ? 'Disabled' : 'Enabled'
-    publicNetworkAccessForQuery: useVnet ? 'Disabled' : 'Enabled'
+    publicNetworkAccessForQuery: 'Enabled' // Keep public query access for debugging - change to 'Disabled' for more security
     useResourcePermissions: true
   }
 }
@@ -540,7 +540,7 @@ module monitorPrivateLinkScope 'br/public:avm/res/insights/private-link-scope:0.
     tags: tags
     accessModeSettings: {
       ingestionAccessMode: 'PrivateOnly'
-      queryAccessMode: 'PrivateOnly'
+      queryAccessMode: 'Open' // Allow public queries for debugging - change to 'PrivateOnly' for more security
     }
     scopedResources: [
       {

@@ -48,6 +48,10 @@ module app 'core/host/container-app-upsert.bicep' = {
         name: 'MCP_SERVER_URL'
         value: mcpServerUrl
       }
+      {
+        name: 'RUNNING_IN_PRODUCTION'
+        value: 'true'
+      }
     ]
   }
 }

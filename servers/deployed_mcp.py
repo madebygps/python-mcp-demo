@@ -9,6 +9,7 @@ from azure.cosmos.aio import CosmosClient
 from azure.identity.aio import DefaultAzureCredential, ManagedIdentityCredential
 from dotenv import load_dotenv
 from fastmcp import FastMCP
+from starlette.responses import JSONResponse
 
 load_dotenv(override=True)
 
@@ -37,6 +38,11 @@ cosmos_container = cosmos_db.get_container_client(AZURE_COSMOSDB_CONTAINER)
 logger.info(f"Connected to Cosmos DB: {AZURE_COSMOSDB_ACCOUNT}")
 
 mcp = FastMCP("Expenses Tracker")
+
+
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request):
+    return JSONResponse({"status": "healthy", "service": "mcp-server"})
 
 
 class PaymentMethod(Enum):

@@ -3,13 +3,14 @@
 name: python-mcp-demo
 metadata:
   template: python-mcp-demo@0.0.1
+
 services:
-  # Not using remoteBuild due to private endpoint usage
   server:
     project: .
     language: docker
     host: containerapp
     docker:
+      remoteBuild: true
       path: ./servers/Dockerfile
       context: .
   agent:
@@ -17,6 +18,7 @@ services:
     language: docker
     host: containerapp
     docker:
+      remoteBuild: true
       path: ./agents/Dockerfile
       context: .
 hooks:

@@ -20,8 +20,11 @@
       "usePrivateIngress": {
         "value": "${USE_PRIVATE_INGRESS=false}"
       },
-      "acaExists": {
-        "value": "${SERVICE_ACA_RESOURCE_EXISTS=false}"
+      "serverExists": {
+        "value": "${SERVICE_SERVER_RESOURCE_EXISTS=false}"
+      },
+      "agentExists": {
+        "value": "${SERVICE_AGENT_RESOURCE_EXISTS=false}"
       }
     }
   }

@@ -40,6 +40,9 @@ param containerCpuCoreCount string = '0.5'
 @description('Memory allocated to a single container instance, e.g. 1Gi')
 param containerMemory string = '1.0Gi'
 
+@description('Health probes for the container')
+param probes array = []
+
 resource userIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: identityName
 }
@@ -102,6 +105,7 @@ resource app 'Microsoft.App/containerApps@2025-01-01' = {
             cpu: json(containerCpuCoreCount)
             memory: containerMemory
           }
+          probes: probes
         }
       ]
       scale: {

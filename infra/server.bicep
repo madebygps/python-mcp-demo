@@ -60,6 +60,37 @@ module app 'core/host/container-app-upsert.bicep' = {
       }
     ]
     targetPort: 8000
+    probes: [
+      {
+        type: 'Startup'
+        httpGet: {
+          path: '/health'
+          port: 8000
+        }
+        initialDelaySeconds: 3
+        periodSeconds: 3
+        failureThreshold: 30
+      }
+      {
+        type: 'Readiness'
+        httpGet: {
+          path: '/health'
+          port: 8000
+        }
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        failureThreshold: 3
+      }
+      {
+        type: 'Liveness'
+        httpGet: {
+          path: '/health'
+          port: 8000
+        }
+        periodSeconds: 10
+        failureThreshold: 3
+      }
+    ]
   }
 }
 
