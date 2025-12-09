@@ -8,6 +8,8 @@ from typing import Annotated
 
 from dotenv import load_dotenv
 from fastmcp import FastMCP
+from fastmcp.server.middleware import Middleware
+
 from opentelemetry_middleware import OpenTelemetryMiddleware, configure_aspire_dashboard
 
 load_dotenv(override=True)
@@ -15,11 +17,8 @@ load_dotenv(override=True)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
 logger = logging.getLogger("ExpensesMCP")
 
-
-otel_endpoint = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT")
-middleware: list = []
-
-if otel_endpoint:
+middleware: list[Middleware] = []
+if os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT"):
     logger.info("Setting up Aspire Dashboard instrumentation (OTLP)")
     configure_aspire_dashboard(service_name="expenses-mcp")
     middleware = [OpenTelemetryMiddleware(tracer_name="expenses.mcp")]
