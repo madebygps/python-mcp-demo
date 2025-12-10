@@ -726,7 +726,7 @@ module cosmosDbPrivateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.
 
 // Container app for MCP server
 var containerAppDomain = replace('${take(prefix,15)}-server', '--', '-')
-// DRY base URLs for auth provider
+// DRY base URLs for auth providers
 var keycloakMcpServerBaseUrl = 'https://mcproutes.${containerApps.outputs.defaultDomain}'
 var entraProxyMcpServerBaseUrl = 'https://${containerAppDomain}.${containerApps.outputs.defaultDomain}'
 module server 'server.bicep' = {
