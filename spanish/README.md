@@ -35,7 +35,7 @@ Una vez abierto el Codespace, abrí una terminal y continuá con los pasos de de
 
 Otra opción relacionada es VS Code Dev Containers, que abre el proyecto en tu VS Code local usando la extensión [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
-1. Iniciá Docker Desktop (instalalo si todavía no lo tenés)
+1. Iniciá Docker Desktop (instalálo si todavía no lo tenés)
 2. Abrí el proyecto: [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/pamelafox/python-mcp-demo)
 3. En la ventana de VS Code que se abre, cuando aparezcan los archivos (puede tardar varios minutos), abrí una terminal.
 4. Continuá con los pasos de despliegue.
