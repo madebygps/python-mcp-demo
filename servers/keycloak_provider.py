@@ -4,11 +4,10 @@ This module provides KeycloakAuthProvider - a complete authentication solution
 that integrates with Keycloak's OAuth 2.1 and OpenID Connect services, supporting
 Dynamic Client Registration (DCR) for seamless MCP client authentication.
 
-This is vendored from the proposed FastMCP PR:
+This is based on proposed FastMCP PR:
 https://github.com/jlowin/fastmcp/pull/1937
 
-Once merged into FastMCP, this file can be removed and replaced with:
-    from fastmcp.server.auth.providers.keycloak import KeycloakAuthProvider
+
 """
 
 from __future__ import annotations
