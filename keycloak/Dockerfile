@@ -24,4 +24,5 @@ ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]
 # --hostname-strict=false allows dynamic hostname resolution from proxy headers
 # --http-relative-path=/auth sets the base path so Keycloak serves all content under /auth/*
 # --import-realm imports the MCP realm on startup
-CMD ["start-dev", "--http-port=8080", "--proxy-headers=xforwarded", "--hostname-strict=false", "--http-relative-path=/auth", "--import-realm"]
+# --import-strategy=overwrite-existing ensures realm.json changes are applied even if the realm exists
+CMD ["start-dev", "--http-port=8080", "--proxy-headers=xforwarded", "--hostname-strict=false", "--http-relative-path=/auth", "--import-realm", "--import-strategy=overwrite-existing"]

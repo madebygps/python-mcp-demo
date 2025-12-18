@@ -16,14 +16,45 @@
   "accessCodeLifespanLogin": 1800,
   "defaultDefaultClientScopes": [
     "openid",
-    "profile", 
-    "email",
-    "mcp:tools"
+    "mcp:access"
   ],
   "clientScopes": [
     {
-      "name": "mcp:tools",
-      "description": "MCP tools scope with audience mapper for MCP server resource",
+      "name": "openid",
+      "description": "OpenID Connect scope with MCP server audience mapper",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      },
+      "protocolMappers": [
+        {
+          "name": "mcp-server-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "mcp-server",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        },
+        {
+          "name": "sub",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-sub-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "name": "mcp:access",
+      "description": "MCP tools scope for accessing MCP server tools",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "true",
@@ -32,7 +63,7 @@
       },
       "protocolMappers": [
         {
-          "name": "mcp-server-audience",
+          "name": "mcp-server-audience-tools",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
@@ -128,14 +159,6 @@
             "oidc-usersessionmodel-note-mapper",
             "oidc-audience-mapper"
           ]
-        }
-      },
-      {
-        "name": "Allowed Client Scopes",
-        "providerId": "allowed-client-templates",
-        "subType": "anonymous",
-        "config": {
-          "allow-default-scopes": ["true"]
         }
       },
       {

@@ -104,24 +104,24 @@ if mcp_auth_provider == "entra_proxy":
 elif mcp_auth_provider == "keycloak":
     # Keycloak authentication using KeycloakAuthProvider with DCR support
     KEYCLOAK_REALM_URL = os.environ["KEYCLOAK_REALM_URL"]
-    keycloak_base_url = os.getenv("KEYCLOAK_MCP_SERVER_BASE_URL")
-    if not keycloak_base_url:
-        keycloak_base_url = "http://localhost:8000" if not RUNNING_IN_PRODUCTION else None
-    if not keycloak_base_url:
-        raise ValueError("KEYCLOAK_MCP_SERVER_BASE_URL must be set in production")
+    if RUNNING_IN_PRODUCTION:
+        keycloak_base_url = os.environ["KEYCLOAK_MCP_SERVER_BASE_URL"]
+    else:
+        keycloak_base_url = "http://localhost:8000"
 
-    # Get audience from env (optional - validates aud claim if set)
-    keycloak_audience = os.getenv("KEYCLOAK_MCP_SERVER_AUDIENCE") or None
+    keycloak_audience = os.getenv("KEYCLOAK_MCP_SERVER_AUDIENCE") or "mcp-server"
 
     auth = KeycloakAuthProvider(
         realm_url=KEYCLOAK_REALM_URL,
         base_url=keycloak_base_url,
-        required_scopes=[],
+        required_scopes=["mcp:access"],
         audience=keycloak_audience,
     )
     logger.info(
         "Using Keycloak DCR auth for server %s and realm %s (audience=%s)",
-        keycloak_base_url, KEYCLOAK_REALM_URL, keycloak_audience
+        keycloak_base_url,
+        KEYCLOAK_REALM_URL,
+        keycloak_audience,
     )
 else:
     logger.error("No authentication configured for MCP server, exiting.")
@@ -251,13 +251,25 @@ async def health_check(_request):
     return JSONResponse({"status": "healthy", "service": "mcp-server"})
 
 
+# Debug middleware to log ALL incoming requests
+class RequestDebugMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        path = request.url.path
+        method = request.method
+        logger.info(f"=== INCOMING REQUEST: {method} {path} ===")
+        logger.info(f"Headers: {dict(request.headers)}")
+        response = await call_next(request)
+        logger.info(f"=== RESPONSE: {response.status_code} for {method} {path} ===")
+        return response
+
+
 # Debug middleware to log token claims before auth
 class TokenDebugMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         path = request.url.path
         method = request.method
         auth_header = request.headers.get("Authorization", "")
-        
+
         if auth_header.startswith("Bearer "):
             token = auth_header[7:]
             try:
@@ -275,12 +287,15 @@ class TokenDebugMiddleware(BaseHTTPMiddleware):
             except Exception as e:
                 logger.error(f"Token decode error [{method} {path}]: {e}")
         else:
-            logger.info(f"=== NO BEARER TOKEN [{method} {path}] auth_header={auth_header[:50] if auth_header else 'empty'} ===")
+            logger.info(
+                f"=== NO BEARER TOKEN [{method} {path}] auth_header={auth_header[:50] if auth_header else 'empty'} ==="
+            )
         return await call_next(request)
 
 
 # Configure Starlette middleware for OpenTelemetry
 # We must do this *after* defining all the MCP server routes
 app = mcp.http_app()
+app.add_middleware(RequestDebugMiddleware)
 app.add_middleware(TokenDebugMiddleware)
 StarletteInstrumentor.instrument_app(app)
