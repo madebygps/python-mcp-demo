@@ -432,23 +432,6 @@ This project supports deploying with OAuth 2.0 authentication using Keycloak as 
 
    Login with `admin` and your configured password.
 
-### Testing with the agent
-
-1. Generate the local environment file (automatically created after `azd up`):
-
-   ```bash
-   ./infra/write_env.sh
-   ```
-
-   This creates `.env` with `KEYCLOAK_REALM_URL`, `MCP_SERVER_URL`, and Azure OpenAI settings.
-
-2. Run the agent:
-
-   ```bash
-   uv run agents/agentframework_http.py
-   ```
-
-   The agent automatically detects `KEYCLOAK_REALM_URL` in the environment and authenticates via DCR + client credentials. On success, it will add an expense and print the result.
 
 ### Use Keycloak OAuth MCP server with GitHub Copilot
 

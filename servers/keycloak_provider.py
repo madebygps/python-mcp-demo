@@ -163,7 +163,6 @@ class KeycloakAuthProvider(RemoteAuthProvider):
             """
             try:
                 body = await request.body()
-                logger.info(f"DCR request body (original): {body.decode('utf-8')}")
 
                 # Forward to Keycloak's DCR endpoint
                 async with httpx.AsyncClient(timeout=10.0) as client:
@@ -204,12 +203,12 @@ class KeycloakAuthProvider(RemoteAuthProvider):
                     auth_method = client_info.get("token_endpoint_auth_method")
                     logger.debug(f"Returning token_endpoint_auth_method to client: {auth_method}")
                     return JSONResponse(client_info, status_code=201)
-            except Exception as e:
-                logger.error(f"DCR proxy error: {e}")
+            except Exception:
+                logger.exception("DCR proxy error during client registration")
                 return JSONResponse(
                     {
                         "error": "server_error",
-                        "error_description": f"Client registration failed: {e}",
+                        "error_description": "Client registration failed.",
                     },
                     status_code=500,
                 )
