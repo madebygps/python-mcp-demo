@@ -153,7 +153,7 @@ class KeycloakAuthProvider(RemoteAuthProvider):
         )
 
         async def register_client_fix_auth_method(request):
-            """Minimal DCR proxy that fixes token_endpoint_auth_method in Keycloak's 
+            """Minimal DCR proxy that fixes token_endpoint_auth_method in Keycloak's
             client registration response.
 
             Forwards registration requests to Keycloak's DCR endpoint and modifies:
