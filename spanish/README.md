@@ -5,14 +5,14 @@ Un proyecto de demostración que muestra implementaciones del Model Context Prot
 ## Tabla de contenidos
 
 - [Empezar](#empezar)
-  - [GitHub Codespaces](#github-codespaces)
-  - [VS Code Dev Containers](#vs-code-dev-containers)
-  - [Entorno local](#entorno-local)
+   - [GitHub Codespaces](#github-codespaces)
+   - [VS Code Dev Containers](#vs-code-dev-containers)
+   - [Entorno local](#entorno-local)
 - [Correr servidores MCP locales](#correr-servidores-mcp-locales)
-  - [Usar con GitHub Copilot](#usar-con-github-copilot)
-  - [Depurar con VS Code](#depurar-con-vs-code)
-  - [Inspeccionar con MCP Inspector](#inspeccionar-con-mcp-inspector)
-  - [Ver trazas con Aspire Dashboard](#ver-trazas-con-aspire-dashboard)
+   - [Usar con GitHub Copilot](#usar-con-github-copilot)
+   - [Depurar con VS Code](#depurar-con-vs-code)
+   - [Inspeccionar con MCP Inspector](#inspeccionar-con-mcp-inspector)
+   - [Ver trazas con Aspire Dashboard](#ver-trazas-con-aspire-dashboard)
 - [Correr Agentes <-> MCP](#correr-agentes---mcp)
 - [Desplegar en Azure](#desplegar-en-azure)
 - [Desplegar en Azure con red privada](#desplegar-en-azure-con-red-privada)
@@ -21,52 +21,52 @@ Un proyecto de demostración que muestra implementaciones del Model Context Prot
 
 ## Empezar
 
-Hay varias opciones para configurar este proyecto. La forma más rápida es GitHub Codespaces, porque te prepara todas las herramientas, pero también podés configurarlo localmente.
+Hay varias opciones para configurar este proyecto. La forma más rápida es GitHub Codespaces, porque te prepara todas las herramientas, pero también puedes configurarlo localmente.
 
 ### GitHub Codespaces
 
-Podés correr este proyecto de forma virtual usando GitHub Codespaces. Hacé clic en el botón para abrir una instancia web de VS Code en tu navegador:
+Puedes ejecutar este proyecto de forma virtual usando GitHub Codespaces. Haz clic en el botón para abrir una instancia web de VS Code en tu navegador:
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/pamelafox/python-mcp-demo)
 
-Una vez abierto el Codespace, abrí una terminal y continuá con los pasos de despliegue.
+Una vez abierto el Codespace, abre una terminal y continúa con los pasos de despliegue.
 
 ### VS Code Dev Containers
 
 Otra opción relacionada es VS Code Dev Containers, que abre el proyecto en tu VS Code local usando la extensión [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers):
 
-1. Iniciá Docker Desktop (instalálo si todavía no lo tenés)
-2. Abrí el proyecto: [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/pamelafox/python-mcp-demo)
-3. En la ventana de VS Code que se abre, cuando aparezcan los archivos (puede tardar varios minutos), abrí una terminal.
-4. Continuá con los pasos de despliegue.
+1. Inicia Docker Desktop (instálalo si todavía no lo tienes)
+2. Abre el proyecto: [![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/pamelafox/python-mcp-demo)
+3. En la ventana de VS Code que se abre, cuando aparezcan los archivos (puede tardar varios minutos), abre una terminal.
+4. Continúa con los pasos de despliegue.
 
 ### Entorno local
 
-Si no usás una de las opciones anteriores, necesitás:
+Si no usas una de las opciones anteriores, necesitas:
 
-1. Asegurate de tener instaladas estas herramientas:
+1. Asegúrate de tener instaladas estas herramientas:
    - [Azure Developer CLI (azd)](https://aka.ms/install-azd)
    - [Python 3.13+](https://www.python.org/downloads/)
    - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
    - [Git](https://git-scm.com/downloads)
 
-2. Cloná el repositorio y abrí la carpeta del proyecto.
+2. Clona el repositorio y abre la carpeta del proyecto.
 
-3. Creá y activá un [entorno virtual de Python](https://docs.python.org/3/tutorial/venv.html#creating-virtual-environments).
+3. Crea y activa un [entorno virtual de Python](https://docs.python.org/3/tutorial/venv.html#creating-virtual-environments).
 
-4. Instalá las dependencias:
+4. Instala las dependencias:
 
    ```bash
    uv sync
    ```
 
-5. Copiá `.env-sample` a `.env` y configurá tus variables de entorno:
+5. Copia `.env-sample` a `.env` y configura tus variables de entorno:
 
    ```bash
    cp .env-sample .env
    ```
 
-6. Editá `.env` con tus credenciales de API. Elegí uno de los siguientes proveedores definiendo `API_HOST`:
+6. Edita `.env` con tus credenciales de API. Elige uno de los siguientes proveedores definiendo `API_HOST`:
    - `github` - GitHub Models (requiere `GITHUB_TOKEN`)
    - `azure` - Azure OpenAI (requiere credenciales de Azure)
    - `ollama` - Instancia local de Ollama
@@ -92,20 +92,20 @@ El archivo `.vscode/mcp.json` configura los servidores MCP para integrarlos con 
 
 - **expenses-mcp**: servidor stdio para uso normal
 - **expenses-mcp-debug**: servidor stdio con debugpy en el puerto 5678
-- **expenses-mcp-http**: servidor HTTP en `http://localhost:8000/mcp`. Debés iniciarlo manualmente con `uv run servers/basic_mcp_http.py` antes de usarlo.
+- **expenses-mcp-http**: servidor HTTP en `http://localhost:8000/mcp`. Debes iniciarlo manualmente con `uv run servers/basic_mcp_http.py` antes de usarlo.
 
 **Cambiar servidores:**
 
-Configurá qué servidor usa GitHub Copilot abriendo el panel de Chat, seleccionando el ícono de herramientas y eligiendo el servidor deseado de la lista.
+Configura qué servidor usa GitHub Copilot abriendo el panel de Chat, seleccionando el ícono de herramientas y eligiendo el servidor deseado de la lista.
 
 ![Diálogo de selección de servidores](../readme_serverselect.png)
 
 **Ejemplo de entrada:**
 
-Usá una consulta como esta para probar el servidor de gastos MCP:
+Usa una consulta como esta para probar el servidor de gastos MCP:
 
 ```text
-Registrá un gasto de 50 dólares de pizza en mi Amex hoy
+Registra un gasto de 50 dólares de pizza en mi Amex hoy
 ```
 
 ![Ejemplo de entrada en GitHub Copilot Chat](../readme_samplequery.png)
@@ -116,20 +116,20 @@ El `.vscode/launch.json` provee una configuración de depuración para adjuntars
 
 **Para depurar un servidor MCP con GitHub Copilot Chat:**
 
-1. Poné breakpoints en el código del servidor MCP en `servers/basic_mcp_stdio.py`.
-2. Iniciá el servidor de depuración vía la configuración en `mcp.json` seleccionando `expenses-mcp-debug`.
-3. Presioná `Cmd+Shift+D` para abrir Run and Debug.
-4. Elegí la configuración "Attach to MCP Server (stdio)".
-5. Presioná `F5` o el botón de play para iniciar el debugger.
-6. Seleccioná el servidor `expenses-mcp-debug` en las herramientas de GitHub Copilot Chat.
-7. Usá GitHub Copilot Chat para disparar las tools MCP.
+1. Pon breakpoints en el código del servidor MCP en `servers/basic_mcp_stdio.py`.
+2. Inicia el servidor de depuración vía la configuración en `mcp.json` seleccionando `expenses-mcp-debug`.
+3. Presiona `Cmd+Shift+D` para abrir Run and Debug.
+4. Elige la configuración "Attach to MCP Server (stdio)".
+5. Presiona `F5` o el botón de play para iniciar el debugger.
+6. Selecciona el servidor `expenses-mcp-debug` en las herramientas de GitHub Copilot Chat.
+7. Usa GitHub Copilot Chat para disparar las tools MCP.
 8. El debugger se detendrá en los breakpoints.
 
 ### Inspeccionar con MCP Inspector
 
 El [MCP Inspector](https://github.com/modelcontextprotocol/inspector) es una herramienta para probar y depurar servidores MCP.
 
-> Nota: Si bien los servidores HTTP pueden funcionar con port forwarding en Codespaces/Dev Containers, la configuración del MCP Inspector y el adjunte del debugger no es tan directa. Para la mejor experiencia de desarrollo con debugging completo, recomendamos correr este proyecto localmente.
+> Nota: Si bien los servidores HTTP pueden funcionar con port forwarding en Codespaces/Dev Containers, la configuración del MCP Inspector y el adjunte del debugger no es tan directa. Para la mejor experiencia de desarrollo con debugging completo, recomendamos ejecutar este proyecto localmente.
 
 **Para servidores stdio:**
 
@@ -139,13 +139,13 @@ npx @modelcontextprotocol/inspector uv run servers/basic_mcp_stdio.py
 
 **Para servidores HTTP:**
 
-1. Iniciá el servidor HTTP:
+1. Inicia el servidor HTTP:
 
    ```bash
    uv run servers/basic_mcp_http.py
    ```
 
-2. En otra terminal, corré el inspector:
+2. En otra terminal, ejecuta el inspector:
 
    ```bash
    npx @modelcontextprotocol/inspector http://localhost:8000/mcp
@@ -160,11 +160,11 @@ El inspector provee una interfaz web para:
 
 ### Ver trazas con Aspire Dashboard
 
-Podés usar el [.NET Aspire Dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone) para ver trazas, métricas y logs de OpenTelemetry del servidor MCP.
+Puedes usar el [.NET Aspire Dashboard](https://learn.microsoft.com/dotnet/aspire/fundamentals/dashboard/standalone) para ver trazas, métricas y logs de OpenTelemetry del servidor MCP.
 
 > Nota: La integración con Aspire Dashboard solo está configurada para el servidor HTTP (`basic_mcp_http.py`).
 
-1. Iniciá el Aspire Dashboard:
+1. Inicia el Aspire Dashboard:
 
    ```bash
    docker run --rm -d -p 18888:18888 -p 4317:18889 --name aspire-dashboard \
@@ -173,25 +173,25 @@ Podés usar el [.NET Aspire Dashboard](https://learn.microsoft.com/dotnet/aspire
 
    > El Aspire Dashboard expone su endpoint OTLP en el puerto 18889 del contenedor. El mapeo `-p 4317:18889` lo hace disponible en el puerto estándar OTLP 4317 del host.
 
-   Obtené la URL del dashboard y el token de login desde los logs del contenedor:
+   Obtén la URL del dashboard y el token de login desde los logs del contenedor:
 
    ```bash
    docker logs aspire-dashboard 2>&1 | grep "Login to the dashboard"
    ```
 
-2. Activá OpenTelemetry agregando esto a tu archivo `.env`:
+2. Activa OpenTelemetry agregando esto a tu archivo `.env`:
 
    ```bash
    OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
    ```
 
-3. Iniciá el servidor HTTP:
+3. Inicia el servidor HTTP:
 
    ```bash
    uv run servers/basic_mcp_http.py
    ```
 
-4. Visitá el dashboard en: http://localhost:18888
+4. Visita el dashboard en: http://localhost:18888
 
 ---
 
@@ -206,15 +206,15 @@ Este proyecto incluye agentes de ejemplo en el directorio [`agents/`](../agents/
 | [agents/langchainv1_http.py](../agents/langchainv1_http.py) | Agente LangChain con integración MCP |
 | [agents/langchainv1_github.py](../agents/langchainv1_github.py) | Demo de filtrado de herramientas LangChain con GitHub MCP (requiere `GITHUB_TOKEN`) |
 
-**Para correr un agente:**
+**Para ejecutar un agente:**
 
-1. Primero iniciá el servidor MCP HTTP:
+1. Primero inicia el servidor MCP HTTP:
 
    ```bash
    uv run servers/basic_mcp_http.py
    ```
 
-2. En otra terminal, corré un agente:
+2. En otra terminal, ejecuta un agente:
 
    ```bash
    uv run agents/agentframework_http.py
@@ -236,26 +236,26 @@ Este proyecto puede desplegarse en Azure Container Apps usando Azure Developer C
 
 ### Configuración de cuenta de Azure
 
-1. Creá una [cuenta gratuita de Azure](https://azure.microsoft.com/free/) y una Suscripción de Azure.
-2. Verificá que tengas los permisos necesarios:
+1. Crea una [cuenta gratuita de Azure](https://azure.microsoft.com/free/) y una Suscripción de Azure.
+2. Verifica que tengas los permisos necesarios:
    - Tu cuenta debe tener permisos `Microsoft.Authorization/roleAssignments/write`, como [Role Based Access Control Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#role-based-access-control-administrator-preview), [User Access Administrator](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#user-access-administrator) o [Owner](https://learn.microsoft.com/azure/role-based-access-control/built-in-roles#owner).
    - Tu cuenta también necesita permisos `Microsoft.Resources/deployments/write` a nivel de suscripción.
 
 ### Desplegar con azd
 
-1. Iniciá sesión en Azure:
+1. Inicia sesión en Azure:
 
    ```bash
    azd auth login
    ```
 
-   Para usuarios de GitHub Codespaces, si falla el comando anterior, probá:
+   Para usuarios de GitHub Codespaces, si falla el comando anterior, prueba:
 
    ```bash
    azd auth login --use-device-code
    ```
 
-2. Creá un nuevo entorno de azd:
+2. Crea un nuevo entorno de azd:
 
    ```bash
    azd env new
@@ -263,7 +263,7 @@ Este proyecto puede desplegarse en Azure Container Apps usando Azure Developer C
 
    Esto creará una carpeta dentro de `.azure` con el nombre de tu entorno.
 
-3. Aprovisioná y desplegá los recursos:
+3. Aprovisiona y despliega los recursos:
 
    ```bash
    azd up
@@ -271,13 +271,13 @@ Este proyecto puede desplegarse en Azure Container Apps usando Azure Developer C
 
    Te pedirá seleccionar suscripción y región. Esto tarda varios minutos.
 
-4. Al finalizar, se creará un archivo `.env` con las variables necesarias para correr los agentes localmente contra los recursos desplegados.
+4. Al finalizar, se creará un archivo `.env` con las variables necesarias para ejecutar los agentes localmente contra los recursos desplegados.
 
 ### Costos
 
 Los precios varían por región y uso, así que no es posible predecir costos exactos para tu caso.
 
-Podés usar la [calculadora de precios de Azure](https://azure.com/e/3987c81282c84410b491d28094030c9a) para estos recursos:
+Puedes usar la [calculadora de precios de Azure](https://azure.com/e/3987c81282c84410b491d28094030c9a) para estos recursos:
 
 - **Azure OpenAI Service**: nivel S0, modelo GPT-4o-mini. El precio se basa en tokens. [Precios](https://azure.microsoft.com/pricing/details/cognitive-services/openai-service/)
 - **Azure Container Apps**: nivel de consumo. [Precios](https://azure.microsoft.com/pricing/details/container-apps/)
@@ -285,21 +285,64 @@ Podés usar la [calculadora de precios de Azure](https://azure.com/e/3987c81282c
 - **Azure Cosmos DB**: nivel serverless. [Precios](https://azure.microsoft.com/pricing/details/cosmos-db/)
 - **Log Analytics** (Opcional): Pago por uso. Costos por datos ingeridos. [Precios](https://azure.microsoft.com/pricing/details/monitor/)
 
-⚠️ Para evitar costos innecesarios, recordá dar de baja la app si ya no la usás, borrando el grupo de recursos en el Portal o ejecutando `azd down`.
+⚠️ Para evitar costos innecesarios, recuerda dar de baja la app si ya no la usas, borrando el grupo de recursos en el Portal o ejecutando `azd down`.
+
+### Usar el servidor MCP desplegado con GitHub Copilot
+
+La URL del servidor MCP desplegado está disponible en la variable de entorno de azd `MCP_SERVER_URL` y se escribe en el archivo `.env` creado después del despliegue.
+
+1. Para evitar conflictos, detén los servidores MCP de `mcp.json` y deshabilita los servidores de gastos en las herramientas de GitHub Copilot Chat.
+2. Selecciona "MCP: Add Server" desde la Paleta de Comandos de VS Code
+3. Selecciona "HTTP" como tipo de servidor
+4. Ingresa la URL del servidor MCP, basada en la variable de entorno `MCP_SERVER_URL`.
+5. Habilita el servidor MCP en las herramientas de GitHub Copilot Chat y pruébalo con una consulta de seguimiento de gastos:
+
+   ```text
+   Registra un gasto de 75 dólares de artículos de oficina en mi Visa el viernes pasado
+   ```
+
+### Ejecutar el servidor localmente
+
+Después del despliegue, también puedes ejecutar el servidor MCP localmente contra los recursos aprovisionados (Cosmos DB, Application Insights):
+
+```bash
+# Ejecuta el servidor MCP
+cd servers && uvicorn deployed_mcp:app --host 0.0.0.0 --port 8000
+```
 
 ### Ver trazas en Azure Application Insights
 
-Por defecto, el tracing de OpenTelemetry está habilitado para el servidor MCP desplegado y envía trazas a Azure Application Insights. Para abrir un dashboard con métricas y trazas, ejecutá:
+Por defecto, el tracing de OpenTelemetry está habilitado para el servidor MCP desplegado y envía trazas a Azure Application Insights. Para abrir un dashboard con métricas y trazas, ejecuta:
 
 ```shell
 azd monitor
 ```
 
-O también podés usar Application Insights directamente:
+También puedes usar Application Insights directamente:
 
-1. Abrí el Portal de Azure y navegá al recurso de Application Insights creado durante el despliegue (con nombre `<project-name>-appinsights`).
-2. En Application Insights, andá a "Transaction Search" para ver trazas del servidor MCP.
-3. Podés filtrar y analizar las trazas para monitorear rendimiento y diagnosticar problemas.
+1. Abre el Portal de Azure y navega al recurso de Application Insights creado durante el despliegue (con nombre `<project-name>-appinsights`).
+2. En Application Insights, ve a "Transaction Search" para ver trazas del servidor MCP.
+3. Puedes filtrar y analizar las trazas para monitorear rendimiento y diagnosticar problemas.
+
+### Ver trazas en Logfire
+
+También puedes ver trazas de OpenTelemetry en [Logfire](https://logfire.io/) configurando el servidor MCP para enviarlas allí.
+
+1. Crea una cuenta de Logfire y obtén tu token de escritura desde el dashboard de Logfire.
+2. Define las variables de entorno de azd para habilitar Logfire:
+
+   ```bash
+   azd env set OPENTELEMETRY_PLATFORM logfire
+   azd env set LOGFIRE_TOKEN <tu-token-de-escritura-de-logfire>
+   ```
+
+3. Aprovisiona y despliega:
+
+   ```bash
+   azd up
+   ```
+
+4. Abre el dashboard de Logfire para ver las trazas del servidor MCP.
 
 ---
 
@@ -307,7 +350,7 @@ O también podés usar Application Insights directamente:
 
 Para demostrar seguridad mejorada en despliegues de producción, este proyecto soporta desplegar con una configuración de red virtual (VNet) que restringe el acceso público a los recursos de Azure.
 
-1. Definí estas variables de entorno de azd para crear una red virtual y endpoints privados para Container App, Cosmos DB y OpenAI:
+1. Define estas variables de entorno de azd para crear una red virtual y endpoints privados para Container App, Cosmos DB y OpenAI:
 
    ```bash
    azd env set USE_VNET true
@@ -316,7 +359,7 @@ Para demostrar seguridad mejorada en despliegues de producción, este proyecto s
 
    Los recursos de Log Analytics y ACR mantendrán acceso público para que puedas desplegar y monitorear la app sin VPN. En producción, normalmente también los restringirías.
 
-2. Aprovisioná y desplegá:
+2. Aprovisiona y despliega:
 
    ```bash
    azd up
@@ -346,25 +389,25 @@ Este proyecto soporta desplegar con autenticación OAuth 2.0 usando Keycloak com
 
 ### Pasos de despliegue
 
-1. Activá autenticación con Keycloak:
+1. Activa la autenticación con Keycloak:
 
    ```bash
    azd env set MCP_AUTH_PROVIDER keycloak
    ```
 
-2. Definí la contraseña de admin de Keycloak (requerido):
+2. Define la contraseña de admin de Keycloak (requerido):
 
    ```bash
    azd env set KEYCLOAK_ADMIN_PASSWORD "TuPasswordSegura123!"
    ```
 
-3. Opcional: personalizá el nombre del realm (por defecto: `mcp`):
+3. Opcional: personaliza el nombre del realm (por defecto: `mcp`):
 
    ```bash
    azd env set KEYCLOAK_REALM_NAME "mcp"
    ```
 
-4. Desplegá en Azure:
+4. Despliega en Azure:
 
    ```bash
    azd up
@@ -372,7 +415,7 @@ Este proyecto soporta desplegar con autenticación OAuth 2.0 usando Keycloak com
 
    Esto creará el entorno de Azure Container Apps, desplegará Keycloak con el realm preconfigurado, desplegará el servidor MCP con validación OAuth y configurará el enrutamiento basado en rutas HTTP.
 
-5. Verificá el despliegue consultando los outputs:
+5. Verifica el despliegue consultando los outputs:
 
    ```bash
    azd env get-value MCP_SERVER_URL
@@ -380,17 +423,17 @@ Este proyecto soporta desplegar con autenticación OAuth 2.0 usando Keycloak com
    azd env get-value KEYCLOAK_ADMIN_CONSOLE
    ```
 
-6. Visitá la consola de administración de Keycloak para verificar el realm:
+6. Visita la consola de administración de Keycloak para verificar el realm:
 
    ```text
    https://<tu-mcproutes-url>/auth/admin
    ```
 
-   Iniciá sesión con `admin` y tu contraseña configurada.
+   Inicia sesión con `admin` y tu contraseña configurada.
 
 ### Probar con el agente
 
-1. Generá el archivo de entorno local (se crea automáticamente después de `azd up`):
+1. Genera el archivo de entorno local (se crea automáticamente después de `azd up`):
 
    ```bash
    ./infra/write_env.sh
@@ -398,7 +441,7 @@ Este proyecto soporta desplegar con autenticación OAuth 2.0 usando Keycloak com
 
    Esto crea `.env` con `KEYCLOAK_REALM_URL`, `MCP_SERVER_URL` y configuraciones de Azure OpenAI.
 
-2. Corré el agente:
+2. Ejecuta el agente:
 
    ```bash
    uv run agents/agentframework_http.py
@@ -412,15 +455,15 @@ El despliegue de Keycloak soporta Dynamic Client Registration (DCR), lo que perm
 
 Para usar el servidor MCP desplegado con GitHub Copilot Chat:
 
-1. Para evitar conflictos, detén los servidores MCP de `mcp.json` y deshabilitá los servidores MCP de gastos en las herramientas de GitHub Copilot Chat.
-2. Seleccioná "MCP: Add Server" desde la Paleta de Comandos de VS Code
-3. Seleccioná "HTTP" como tipo de servidor
-4. Ingresá la URL del servidor MCP desde `azd env get-value MCP_SERVER_URL`
-5. Deberías ver una pantalla de autenticación de Keycloak abrirse en tu navegador. Seleccioná "Allow access":
+1. Para evitar conflictos, detén los servidores MCP de `mcp.json` y deshabilita los servidores MCP de gastos en las herramientas de GitHub Copilot Chat.
+2. Selecciona "MCP: Add Server" desde la Paleta de Comandos de VS Code
+3. Selecciona "HTTP" como tipo de servidor
+4. Ingresa la URL del servidor MCP desde `azd env get-value MCP_SERVER_URL`
+5. Deberías ver una pantalla de autenticación de Keycloak abrirse en tu navegador. Selecciona "Allow access":
 
    ![Pantalla de permitir acceso de Keycloak](../screenshots/kc-allow-1.jpg)
 
-6. Iniciá sesión con un usuario de Keycloak (ej. `testuser` / `testpass` para el usuario demo preconfigurado):
+6. Inicia sesión con un usuario de Keycloak (ej. `testuser` / `testpass` para el usuario demo preconfigurado):
 
    ![Pantalla de inicio de sesión de Keycloak](../screenshots/kc-signin-2.jpg)
 
@@ -428,22 +471,22 @@ Para usar el servidor MCP desplegado con GitHub Copilot Chat:
 
    ![Redirección de VS Code después del inicio de sesión de Keycloak](../screenshots/kc-redirect-3.jpg)
 
-8. Habilitá el servidor MCP en las herramientas de GitHub Copilot Chat:
+8. Habilita el servidor MCP en las herramientas de GitHub Copilot Chat:
 
    ![Seleccionar herramientas MCP en GitHub Copilot](../screenshots/kc-select-tools-4.jpg)
 
-9. Probálo con una consulta de seguimiento de gastos:
+9. Pruébalo con una consulta de seguimiento de gastos:
 
    ```text
-   Registrá un gasto de 75 dólares de útiles de oficina en mi visa el viernes pasado
+   Registra un gasto de 75 dólares de útiles de oficina en mi visa el viernes pasado
    ```
 
    ![Ejemplo de GitHub Copilot Chat con autenticación Keycloak](../screenshots/kc-chat-5.jpg)
 
-10. Verificá que el gasto se agregó revisando el contenedor `user-expenses` de Cosmos DB en el Portal de Azure o preguntando a GitHub Copilot Chat:
+10. Verifica que el gasto se agregó revisando el contenedor `user-expenses` de Cosmos DB en el Portal de Azure o preguntando a GitHub Copilot Chat:
 
     ```text
-    Dime mis gastos de la semana pasada
+      Dime mis gastos de la semana pasada
     ```
 
 ### Limitaciones conocidas (trade-offs de la demo)
@@ -474,19 +517,19 @@ Este proyecto soporta desplegar con Microsoft Entra ID (Azure AD) usando el prox
 
 ### Pasos de despliegue para Entra OAuth
 
-1. Activá el proxy de Entra OAuth:
+1. Activa el proxy de Entra OAuth:
 
    ```bash
    azd env set MCP_AUTH_PROVIDER entra_proxy
    ```
 
-2. Definí tu tenant ID para crear la App Registration en el tenant correcto:
+2. Define tu tenant ID para crear la App Registration en el tenant correcto:
 
    ```bash
    azd env set AZURE_TENANT_ID "<tu-tenant-id>"
    ```
 
-3. Desplegá en Azure:
+3. Despliega en Azure:
 
    ```bash
    azd up
@@ -496,7 +539,7 @@ Este proyecto soporta desplegar con Microsoft Entra ID (Azure AD) usando el prox
    - **Hook de preprovision**: Crea una App Registration de Microsoft Entra con un secreto de cliente, y guarda las credenciales en variables de entorno de azd
    - **Hook de postprovision**: Actualiza la App Registration con la URL del servidor desplegado como URI de redirección adicional
 
-4. Verificá el despliegue consultando los outputs:
+4. Verifica el despliegue consultando los outputs:
 
    ```bash
    azd env get-value MCP_SERVER_URL
@@ -516,10 +559,10 @@ Estas luego se escriben a `.env` por el hook de postprovision para desarrollo lo
 
 ### Probar localmente
 
-Después del despliegue, podés probar localmente con OAuth habilitado:
+Después del despliegue, puedes probar localmente con OAuth habilitado:
 
 ```bash
-# Correr el servidor MCP
+# Ejecuta el servidor MCP
 cd servers && uvicorn auth_mcp:app --host 0.0.0.0 --port 8000
 ```
 
@@ -534,12 +577,12 @@ La App Registration de Entra incluye estas URIs de redirección para VS Code:
 
 Para usar el servidor MCP desplegado con GitHub Copilot Chat:
 
-1. Para evitar conflictos, detené los servidores MCP de `mcp.json` y deshabilitá los servidores de gastos en las herramientas de GitHub Copilot Chat.
-2. Seleccioná "MCP: Add Server" desde la Paleta de Comandos de VS Code.
-3. Elegí "HTTP" como tipo de servidor.
-4. Ingresá la URL del servidor MCP, ya sea desde la variable de entorno `MCP_SERVER_URL` o `http://localhost:8000/mcp` si corrés localmente.
-5. Si ves un error "Client ID not found", abrí la Paleta de Comandos, ejecutá **"Authentication: Remove Dynamic Authentication Providers"** y seleccioná la URL del servidor MCP. Esto limpia tokens OAuth cacheados y fuerza un flujo de autenticación nuevo. Luego reiniciá el servidor para que vuelva a pedir OAuth.
-6. Deberías ver una pantalla de autenticación de FastMCP en tu navegador. Seleccioná "Allow access":
+1. Para evitar conflictos, detén los servidores MCP de `mcp.json` y deshabilita los servidores de gastos en las herramientas de GitHub Copilot Chat.
+2. Selecciona "MCP: Add Server" desde la Paleta de Comandos de VS Code.
+3. Elige "HTTP" como tipo de servidor.
+4. Ingresa la URL del servidor MCP, ya sea desde la variable de entorno `MCP_SERVER_URL` o `http://localhost:8000/mcp` si ejecutas localmente.
+5. Si ves un error "Client ID not found", abre la Paleta de Comandos, ejecuta **"Authentication: Remove Dynamic Authentication Providers"** y selecciona la URL del servidor MCP. Esto limpia tokens OAuth cacheados y fuerza un flujo de autenticación nuevo. Luego reinicia el servidor para que vuelva a pedir OAuth.
+6. Deberías ver una pantalla de autenticación de FastMCP en tu navegador. Selecciona "Allow access":
 
    ![Pantalla de autenticación de FastMCP](../readme_appaccess.png)
 
@@ -547,14 +590,14 @@ Para usar el servidor MCP desplegado con GitHub Copilot Chat:
 
    ![Página de inicio de sesión exitoso en VS Code](../readme_signedin.png)
 
-8. Habilitá el servidor MCP en las herramientas de GitHub Copilot Chat y probalo con una consulta de seguimiento de gastos:
+8. Habilita el servidor MCP en las herramientas de GitHub Copilot Chat y pruébalo con una consulta de seguimiento de gastos:
 
    ```text
-   Registrá un gasto de 75 dólares de artículos de oficina en mi Visa el viernes pasado
+   Registra un gasto de 75 dólares de artículos de oficina en mi Visa el viernes pasado
    ```
 
    ![Ejemplo de entrada en GitHub Copilot Chat](../readme_authquery.png)
 
-9. Verificá que el gasto se agregó revisando el contenedor `user-expenses` de Cosmos DB en el Portal de Azure.
+9. Verifica que el gasto se agregó revisando el contenedor `user-expenses` de Cosmos DB en el Portal de Azure.
 
    ![Contenedor user-expenses de Cosmos DB](../readme_userexpenses.png)
